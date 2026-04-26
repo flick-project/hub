@@ -37,6 +37,8 @@ docker compose up
 
 ## Documentation
 
-- **Wiki** — project documentation and decisions
+- **Wiki** — project documentation
+- **Milestones** — Plan → Milestones
 - **Requirements** — Plan → Requirements
-- **Issues & Milestones** — Plan → Issues
+- **Test cases** — Build → Test cases
+- **Issues** — Plan → Issues
