@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: flick
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: flick
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  server:
+    build: ../flick-server
+    environment:
+      DATABASE_URL: postgres://flick:${DB_PASSWORD}@db:5432/flick
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_LIFE: ${JWT_LIFE}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  client:
+    build: ../flick-client
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
+
+volumes:
+  pgdata:

@@ -1,18 +1,42 @@
-# Your Project
+# Flick
 
-This is your project's GitLab repository. You have **Maintainer** access — you can configure pipelines, manage project settings, and work freely within the repository.
+A swipe-based movie discovery app. Save movies to your watchlist, skip what doesn't interest you, customize your profile, and get personalized recommendations over time.
 
-## What lives here
+## Architecture
 
-This repository is the hub for your project. Use it to:
+Flick is split into three repos within this GitLab group:
 
-- Document your project in the **Wiki** (Plan → Wiki)
-- Track requirements in **Requirements Management** (Plan → Requirements)
-- Plan and track work in **Issues** and **Milestones** (Plan → Issues)
-- Set up your **CI/CD pipeline** via `.gitlab-ci.yml`
+- **project-hub** (you are here) — Docker setup, CI/CD, documentation
+- **flick-client** — React frontend (Vite + Tailwind)
+- **flick-server** — Express API + PostgreSQL
 
-If your project has multiple components (e.g. a frontend and a backend), create separate repositories for each within your GitLab `workspace` group, and use this repository as the project hub.
+## Getting started
 
----
+1. Clone all three repos into the same parent folder:
+```
+git clone <project-hub-url>
+git clone <flick-client-url>
+git clone <flick-server-url>
+```
 
-👉 **Replace this README with a description of your own project.**
+2. Copy `.env.example` to `.env` and fill in your values:
+
+```
+   cp .env.example .env
+```
+
+3. Start everything:
+```
+cd project-hub
+docker compose up
+```
+
+- Client: http://localhost:8080
+- Server: http://localhost:3000
+- Database: PostgreSQL on port 5432
+
+## Documentation
+
+- **Wiki** — project documentation and decisions
+- **Requirements** — Plan → Requirements
+- **Issues & Milestones** — Plan → Issues
