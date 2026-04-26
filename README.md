@@ -18,13 +18,13 @@ git clone <project-hub-url>
 git clone <flick-client-url>
 git clone <flick-server-url>
 ```
-
+---
 2. Copy `.env.example` to `.env` and fill in your values:
 
 ```
-   cp .env.example .env
+cp .env.example .env
 ```
-
+---
 3. Start everything:
 ```
 cd project-hub
