@@ -1,0 +1,26 @@
+# Production overrides. Run with:
+# DOCKER_HOST=ssh://hasse@<ip> docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+services:
+  db:
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    # Use production Dockerfile (npm ci --omit=dev, no watch mode).
+    build:
+      context: ../flick-server
+      dockerfile: Dockerfile.production
+    environment:
+      NODE_ENV: production
+
+  client:
+    # Build static assets with Vite and serve via Nginx.
+    build:
+      context: ../flick-client
+      args:
+        - VITE_API_URL=https://api.flick.lingon.cloud/api/v1
+    ports:
+      - "8082:80"
+
+volumes:
+  pgdata:

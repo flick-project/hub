@@ -1,0 +1,5 @@
+# Custom PostgreSQL image with schema baked in.
+# This is needed because DOCKER_HOST builds remotely,
+# so volume mounts to local files don't work in production.
+FROM postgres:17-alpine
+COPY sql/schema.sql /docker-entrypoint-initdb.d/schema.sql
