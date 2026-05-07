@@ -1,5 +1,5 @@
 # Production overrides. Run with:
-# DOCKER_HOST=ssh://hasse@<ip> docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+# DOCKER_HOST=ssh://user@<ip> docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
 services:
   db:
     volumes:
@@ -12,15 +12,20 @@ services:
       dockerfile: Dockerfile.production
     environment:
       NODE_ENV: production
+    restart: always
 
   client:
     # Build static assets with Vite and serve via Nginx.
     build:
       context: ../flick-client
       args:
-        - VITE_API_URL=https://api.flick.lingon.cloud/api/v1
-    ports:
-      - "8082:80"
+        - VITE_API_URL=https://flick-api.lingon.cloud/api/v1
+    restart: always
 
 volumes:
   pgdata:
+
+networks:
+  default:
+    external: true
+    name: proxy

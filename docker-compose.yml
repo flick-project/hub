@@ -11,8 +11,6 @@ services:
       POSTGRES_USER: flick
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: flick
-    ports:
-      - "5432:5432"
 
   server:
     build:
@@ -22,9 +20,6 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_LIFE: ${JWT_LIFE}
       TMDB_API_KEY: ${TMDB_API_KEY}
-    # Mapped to 3001 on host to avoid conflicts with other services.
-    ports:
-      - "3001:3000"
     depends_on:
       - db
 
