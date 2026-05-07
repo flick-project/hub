@@ -16,6 +16,8 @@ services:
       - ../flick-server/src:/app/src
     command: node --watch src/server.js
     env_file: .env
+    ports:
+      - "3000:3000"
 
   client:
     # Run Vite dev server with HMR instead of building with Nginx.

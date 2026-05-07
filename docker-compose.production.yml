@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile.production
     environment:
       NODE_ENV: production
+      CORS_ORIGIN: https://flick.lingon.cloud
     restart: always
 
   client:
