@@ -1,6 +1,8 @@
 services:
   db:
-    image: postgres:17-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     container_name: flick-db
     restart: unless-stopped
     environment:
@@ -9,7 +11,6 @@ services:
       - POSTGRES_DB=flick
     volumes:
       - flick-db-data:/var/lib/postgresql/data
-      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - flick-network
 
