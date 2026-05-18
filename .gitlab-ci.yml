@@ -1,0 +1,52 @@
+.before_script_ssh_setup: &before_script_ssh_setup
+  # Ensure ssh-agent is installed and started.
+  - command -v ssh-agent >/dev/null || ( apk add --no-cache openssh-client )
+
+  # Start the ssh-agent in the background.
+  - eval $(ssh-agent -s)
+
+  # Decode the base64-encoded SSH key and write to a temporary file.
+  # Using 'tr' to remove carriage return characters for ed25519 compatibility.
+  - echo "$SSH_PRIVATE_KEY" | base64 -d | tr -d '\r' > ~/.ssh_key
+
+  # Set strict permissions (required by OpenSSH) and add key to agent.
+  - chmod 600 ~/.ssh_key
+  - ssh-add ~/.ssh_key
+
+  # Remove the temporary key file immediately for security.
+  - rm ~/.ssh_key
+
+  # Add the remote server to known_hosts to prevent MITM attacks.
+  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  - ssh-keyscan -H $PRODUCTION_HOST >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+default:
+  artifacts:
+    expire_in: 1 day
+
+include:
+- template: Security/SAST.gitlab-ci.yml
+- template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECRET_DETECTION_ENABLED: 'true'
+
+stages:
+  - deploy
+
+deploy:
+  environment:
+    name: production
+  stage: deploy
+  image: docker:27-cli
+  before_script: *before_script_ssh_setup
+  script:
+    - unset DOCKER_HOST
+    - docker context create production --docker "host=ssh://hasse@$PRODUCTION_HOST"
+    - docker context use production
+    - echo "DB_PASSWORD=${DB_PASSWORD}" > .env
+    - docker compose -f docker-compose.production.yml up -d
+    - docker system prune -f
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"

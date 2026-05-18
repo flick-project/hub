@@ -1,32 +1,22 @@
-# Production overrides. Run with:
-# DOCKER_HOST=ssh://user@<ip> docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
 services:
   db:
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  server:
-    # Use production Dockerfile (npm ci --omit=dev, no watch mode).
-    build:
-      context: ../flick-server
-      dockerfile: Dockerfile.production
+    image: postgres:17-alpine
+    container_name: flick-db
+    restart: unless-stopped
     environment:
-      NODE_ENV: production
-      CORS_ORIGIN: https://flick.lingon.cloud
-    restart: always
-
-  client:
-    # Build static assets with Vite and serve via Nginx.
-    build:
-      context: ../flick-client
-      args:
-        - VITE_API_URL=https://flick-api.lingon.cloud/api/v1
-    restart: always
-
-volumes:
-  pgdata:
+      - POSTGRES_USER=flick
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=flick
+    volumes:
+      - flick-db-data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - flick-network
 
 networks:
-  default:
-    external: true
-    name: proxy
+  flick-network:
+    name: flick-network
+    driver: bridge
+
+volumes:
+  flick-db-data:
