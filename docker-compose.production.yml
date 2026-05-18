@@ -17,6 +17,7 @@ services:
 networks:
   flick-network:
     name: flick-network
+    external: true
 
 volumes:
   flick-db-data:
