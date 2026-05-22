@@ -46,7 +46,8 @@ deploy:
     - docker context create production --docker "host=ssh://hasse@$PRODUCTION_HOST"
     - docker context use production
     - echo "DB_PASSWORD=${DB_PASSWORD}" > .env
-    - docker compose -f docker-compose.production.yml up -d
+    - docker network create flick-network || true
+    - docker compose -f docker-compose.production.yml up -d --build
     - docker system prune -f
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
