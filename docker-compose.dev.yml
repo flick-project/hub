@@ -20,6 +20,8 @@ services:
       - "3000:3000"
 
   client:
+    depends_on:
+    - server
     # Run Vite dev server with HMR instead of building with Nginx.
     image: node:24-alpine
     working_dir: /app
