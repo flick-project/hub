@@ -14,7 +14,7 @@ services:
 
   server:
     build:
-      context: ../flick-server
+      context: ../server
     environment:
       DATABASE_URL: postgres://flick:${DB_PASSWORD}@db:5432/flick
       JWT_SECRET: ${JWT_SECRET}
